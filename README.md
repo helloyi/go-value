@@ -15,7 +15,8 @@ You can do the following things, after new Value from interface{} like this `v :
 + Numerical type is adaptive when get; example, `i` kind is uint8 and get with Int16() is legal, the value is automatically converted to int16 instead of type mismatch.
 + Provide `Must*` API, for chaining call and some friendly writing.
 + Unmarshal to a value with `Value.ConvTo`
-+ Supported unmarshal to time.Duration or time.Time etc..
++ Supported covert to time.Duration or time.Time etc..
++ [ ] Supported convert to frequently used build-in type
 
 ## Example
 
