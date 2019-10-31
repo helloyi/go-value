@@ -2,6 +2,8 @@ package value
 
 import (
 	"math/bits"
+	"net"
+	"net/url"
 	"reflect"
 	"time"
 
@@ -1018,6 +1020,27 @@ var _ = Describe("ConvTo", func() {
 		err := vx.ConvTo(&y)
 		Expect(err).Should(BeNil())
 		Expect(y.Format(TimeLayout)).Should(Equal(x))
+	})
+
+	Specify("net.IP type", func() {
+		x := "8.8.8.8"
+		var y net.IP
+
+		vx := New(x)
+		err := vx.ConvTo(&y)
+		Expect(err).Should(BeNil())
+		Expect(y).Should(Equal(net.ParseIP(x)))
+	})
+
+	Specify("url.URL type", func() {
+		x := "http://userinfo@www.abc.com/path?query=1#fragment"
+		var y url.URL
+
+		vx := New(x)
+		err := vx.ConvTo(&y)
+		Expect(err).Should(BeNil())
+		u, _ := url.Parse(x)
+		Expect(y).Should(Equal(*u))
 	})
 
 	Specify("nest struct kind", func() {

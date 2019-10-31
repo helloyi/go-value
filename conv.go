@@ -1,7 +1,10 @@
 package value
 
 import (
+	"fmt"
 	"math/bits"
+	"net"
+	"net/url"
 	"reflect"
 	"time"
 )
@@ -48,7 +51,11 @@ func (v *Value) convTo(dst reflect.Value) (err error) {
 	case "time.Duration":
 		return v.convToTimeDuration(dst)
 	case "time.Time":
-		return v.convToTime(dst)
+		return v.convToTimeTime(dst)
+	case "net.IP":
+		return v.convToNetIP(dst)
+	case "url.URL":
+		return v.convToNetURL(dst)
 	}
 
 	switch dst.Kind() {
@@ -106,7 +113,7 @@ func (v *Value) convToTimeDuration(dst reflect.Value) error {
 	return nil
 }
 
-func (v *Value) convToTime(dst reflect.Value) error {
+func (v *Value) convToTimeTime(dst reflect.Value) error {
 	s, err := v.String()
 	if err != nil {
 		return err
@@ -116,6 +123,32 @@ func (v *Value) convToTime(dst reflect.Value) error {
 		return err
 	}
 	dst.Set(reflect.ValueOf(t))
+	return nil
+}
+
+func (v *Value) convToNetIP(dst reflect.Value) error {
+	s, err := v.String()
+	if err != nil {
+		return err
+	}
+	ip := net.ParseIP(s)
+	if ip == nil {
+		return fmt.Errorf("invalid ip")
+	}
+	dst.Set(reflect.ValueOf(ip))
+	return nil
+}
+
+func (v *Value) convToNetURL(dst reflect.Value) error {
+	s, err := v.String()
+	if err != nil {
+		return err
+	}
+	url, err := url.Parse(s)
+	if err != nil {
+		return err
+	}
+	dst.Set(reflect.ValueOf(*url))
 	return nil
 }
 
