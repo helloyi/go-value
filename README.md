@@ -21,3 +21,44 @@ You can do the following things, after new Value from interface{} like this `v :
 ## Example
 
 [example_test.go](https://github.com/helloyi/go-value/blob/master/example_test.go)
+
+convert v to net.IP, time.Duration etc..
+```golang
+package main
+
+import (
+	"fmt"
+	"log"
+	"net"
+	"time"
+
+	"github.com/helloyi/go-value"
+)
+
+func main() {
+	x := map[string]interface{}{
+		"a": 1,
+		"B": "b",
+		"C": "c",
+		"D": "13s",
+		"E": "Fri Nov 1 19:13:55 +0800 CST 2019",
+		"F": "8.8.8.8",
+	}
+
+	var y struct {
+		A int    `value:"a"` // set with name "a"
+		B int    `value:"_"` // passed
+		C string // set with name "C"
+		D time.Duration
+		E *time.Time
+		F *net.IP
+	}
+
+	v := value.New(x)
+	if err := v.ConvTo(&y); err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Printf("%v\n", y)
+	// Output: {1 0 c 13s 2019-11-01 19:13:55 +0800 CST 8.8.8.8}
+}
+```
