@@ -475,10 +475,12 @@ func (v *Value) Ptr() uintptr {
 	return v.getrv().Pointer()
 }
 
-var _StringerType = reflect.TypeOf((fmt.Stringer)(nil))
-
 func (v *Value) String() (string, error) {
-	// TODO: check if implement string
+	iv := v.getiv()
+	strger, ok := iv.(fmt.Stringer)
+	if ok {
+		return strger.String(), nil
+	}
 
 	switch v.getrv().Kind() {
 	case reflect.Invalid:

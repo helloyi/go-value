@@ -761,8 +761,19 @@ var _ = Describe("Gets", func() {
 			v = New(x)
 			Expect(v.String()).Should(Equal("(1.2e+34-1.2e+34i)"))
 		})
+		Specify("stringer type", func() {
+			var x StringerTest
+			v := New(&x)
+			Expect(v.String()).Should(Equal(x.String()))
+		})
 	})
 })
+
+type StringerTest struct{}
+
+func (s *StringerTest) String() string {
+	return "test"
+}
 
 var _ = Describe("Sets", func() {
 	Context("with Set()", func() {
