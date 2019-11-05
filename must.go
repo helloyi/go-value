@@ -45,6 +45,51 @@ func (v *Value) MustInt64() int64 {
 	return i
 }
 
+// MustUint must api for Uint()
+func (v *Value) MustUint() uint {
+	i, err := v.Uint()
+	if err != nil {
+		panic(err)
+	}
+	return i
+}
+
+// MustUint8 must api for Uint8()
+func (v *Value) MustUint8() uint8 {
+	i, err := v.Uint8()
+	if err != nil {
+		panic(err)
+	}
+	return i
+}
+
+// MustUint16 must api for Uint16()
+func (v *Value) MustUint16() uint16 {
+	i, err := v.Uint16()
+	if err != nil {
+		panic(err)
+	}
+	return i
+}
+
+// MustUint32 must api for Uint32()
+func (v *Value) MustUint32() uint32 {
+	i, err := v.Uint32()
+	if err != nil {
+		panic(err)
+	}
+	return i
+}
+
+// MustUint64 must api for Uint64()
+func (v *Value) MustUint64() uint64 {
+	i, err := v.Uint64()
+	if err != nil {
+		panic(err)
+	}
+	return i
+}
+
 // MustFloat32 must api for Float32()
 func (v *Value) MustFloat32() float32 {
 	val, err := v.Float32()
