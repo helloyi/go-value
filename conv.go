@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/url"
 	"reflect"
+	"strings"
 	"time"
 )
 
@@ -349,7 +350,7 @@ func (v *Value) convToSlice(dst reflect.Value) error {
 			ev = newSlice.Index(i)
 		} else {
 			ev = reflect.New(newSlice.Type().Elem())
-			newSlice = reflect.Append(newSlice, ev)
+			newSlice = reflect.Append(newSlice, ev.Elem())
 			ev = newSlice.Index(i)
 		}
 
@@ -368,6 +369,7 @@ func (v *Value) convToStruct(dst reflect.Value) error {
 
 	dstype := dst.Type()
 	tag2Fname := map[string]string{}
+	lower2Fname := map[string]string{}
 	passedFnames := map[string]bool{}
 	for i := 0; i < dstype.NumField(); i++ {
 		field := dstype.Field(i)
@@ -376,6 +378,19 @@ func (v *Value) convToStruct(dst reflect.Value) error {
 			passedFnames[field.Name] = true
 		} else if tag != "" {
 			tag2Fname[tag] = field.Name
+		} else {
+			lower2Fname[strings.ToLower(field.Name)] = field.Name
+		}
+	}
+
+	matchCase := false
+	for kv := range vm {
+		key, err := kv.String()
+		if err != nil {
+			return err
+		}
+		if strings.ToLower(key) != key {
+			matchCase = true
 		}
 	}
 	for kv, vv := range vm {
@@ -388,7 +403,11 @@ func (v *Value) convToStruct(dst reflect.Value) error {
 		}
 		fn := tag2Fname[key]
 		if fn == "" {
-			fn = key
+			if matchCase {
+				fn = key
+			} else {
+				fn = lower2Fname[key]
+			}
 		}
 		f := dst.FieldByName(fn)
 		if f.Kind() == reflect.Invalid {
