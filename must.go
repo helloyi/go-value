@@ -108,6 +108,42 @@ func (v *Value) MustFloat64() float64 {
 	return val
 }
 
+// MustComplex64 must api for Complex64()
+func (v *Value) MustComplex64() complex64 {
+	val, err := v.Complex64()
+	if err != nil {
+		panic(err)
+	}
+	return val
+}
+
+// MustComplex128 must api for Complex128()
+func (v *Value) MustComplex128() complex128 {
+	val, err := v.Complex128()
+	if err != nil {
+		panic(err)
+	}
+	return val
+}
+
+// MustBool must api for Bool()
+func (v *Value) MustBool() bool {
+	val, err := v.Bool()
+	if err != nil {
+		panic(err)
+	}
+	return val
+}
+
+// MustBytes must api for Bytes()
+func (v *Value) MustBytes() []byte {
+	val, err := v.Bytes()
+	if err != nil {
+		panic(err)
+	}
+	return val
+}
+
 // MustGet must api for Get
 func (v *Value) MustGet(k interface{}) *Value {
 	val, err := v.Get(k)
