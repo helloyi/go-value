@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"math/bits"
 	"net"
+	"net/mail"
 	"net/url"
 	"reflect"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -57,6 +59,10 @@ func (v *Value) convTo(dst reflect.Value) (err error) {
 		return v.convToNetIP(dst)
 	case "url.URL":
 		return v.convToNetURL(dst)
+	case "mail.Address":
+		return v.convToMailAddress(dst)
+	case "regexp.Regexp":
+		return v.convToRegexpRegexp(dst)
 	}
 
 	switch dst.Kind() {
@@ -151,6 +157,40 @@ func (v *Value) convToNetURL(dst reflect.Value) error {
 	}
 	dst.Set(reflect.ValueOf(*url))
 	return nil
+}
+
+func (v *Value) convToMailAddress(dst reflect.Value) error {
+	s, err := v.String()
+	if err != nil {
+		return err
+	}
+	addr, err := mail.ParseAddress(s)
+	if err != nil {
+		return err
+	}
+	dst.Set(reflect.ValueOf(*addr))
+	return nil
+}
+
+func (v *Value) convToRegexpRegexp(dst reflect.Value) error {
+	s, err := v.String()
+	if err != nil {
+		return err
+	}
+
+	r, err := regexp.Compile(s)
+	if err == nil {
+		dst.Set(reflect.ValueOf(*r))
+		return nil
+	}
+
+	r, err = regexp.CompilePOSIX(s)
+	if err == nil {
+		dst.Set(reflect.ValueOf(*r))
+		return nil
+	}
+
+	return err
 }
 
 func (v *Value) convToPtr(dst reflect.Value) error {
