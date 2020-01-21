@@ -3,8 +3,10 @@ package value
 import (
 	"math/bits"
 	"net"
+	"net/mail"
 	"net/url"
 	"reflect"
+	"regexp"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -873,7 +875,7 @@ var _ = Describe("Dos", func() {
 				2: 2,
 			}
 			v := New(m)
-			v.EachDo(func(key, val *Value) error {
+			_ = v.EachDo(func(key, val *Value) error {
 				Expect(m[key.MustInt()]).Should(Equal(val.MustInt()))
 				return nil
 			})
@@ -1052,6 +1054,28 @@ var _ = Describe("ConvTo", func() {
 		Expect(err).Should(BeNil())
 		u, _ := url.Parse(x)
 		Expect(y).Should(Equal(*u))
+	})
+
+	Specify("mail.Address", func() {
+		x := "name <name@host.com>"
+		var y mail.Address
+
+		vx := New(x)
+		err := vx.ConvTo(&y)
+		Expect(err).Should(BeNil())
+		a, _ := mail.ParseAddress(x)
+		Expect(y).Should(Equal(*a))
+	})
+
+	Specify("regexp.Regexp", func() {
+		x := "[0-9]+"
+		var y regexp.Regexp
+
+		vx := New(x)
+		err := vx.ConvTo(&y)
+		Expect(err).Should(BeNil())
+		r, _ := regexp.Compile(x)
+		Expect(y).Should(Equal(*r))
 	})
 
 	Specify("nest struct kind", func() {
