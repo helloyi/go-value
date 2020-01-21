@@ -5,12 +5,17 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
+	"net/url"
+	"regexp"
+	"time"
+	"net/mail"
 
 	"github.com/helloyi/go-value"
 )
 
-func ExampleGets() {
+func Example() {
 	resp, err := http.Get("https://api.alternative.me/fng/?limit=10")
 	if err != nil {
 		log.Fatalln(err)
@@ -44,7 +49,7 @@ func ExampleGets() {
 	log.Println(string(data))
 }
 
-func ExampleForMap() {
+func ExampleValue_EachDo_map() {
 	var m interface{} = map[int]int{
 		1: 1,
 		2: 2,
@@ -63,22 +68,29 @@ func ExampleForMap() {
 	// Output: 3
 }
 
-func ExampleConvTo() {
+func ExampleValue_ConvTo() {
 	x := map[string]interface{}{
 		"a": 1,
-		"A": 11,
-
 		"B": "b",
-		"b": "bb",
-
 		"C": "c",
-		"c": "cc",
+		"D": "13s",
+		"E": "Fri Nov 1 19:13:55 +0800 CST 2019",
+		"F": "8.8.8.8",
+		"G": "http://host/path?param=x",
+		"H": "[0-9]+",
+		"I": "name <uer@mail.com>",
 	}
 
 	var y struct {
 		A int    `value:"a"` // set with name "a"
 		B int    `value:"_"` // passed
 		C string // set with name "C"
+		D time.Duration
+		E *time.Time
+		F *net.IP
+		G *url.URL
+		H *regexp.Regexp
+		I *mail.Address
 	}
 
 	v := value.New(x)
@@ -86,10 +98,10 @@ func ExampleConvTo() {
 		log.Fatalln(err)
 	}
 	fmt.Printf("%v\n", y)
-	// Output: {1 0 c}
+	// Output: {1 0 c 13s 2019-11-01 19:13:55 +0800 CST 8.8.8.8 http://host/path?param=x [0-9]+ "name" <uer@mail.com>}
 }
 
-func ExampleSetMap() {
+func ExampleValue_Put() {
 	var m interface{} = map[int]int{
 		1: 1,
 		2: 2,

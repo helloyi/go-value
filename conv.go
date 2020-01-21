@@ -438,7 +438,7 @@ func (v *Value) convToStruct(dst reflect.Value) error {
 		if err != nil {
 			return err
 		}
-		if passedFnames[key] == true {
+		if passedFnames[key] {
 			continue
 		}
 		fn := tag2Fname[key]

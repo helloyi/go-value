@@ -121,9 +121,9 @@ func (v *Value) string() string {
 	return v.getrv().String()
 }
 
-func (v *Value) interface_() interface{} {
-	return v.getrv().Interface()
-}
+// func (v *Value) interface_() interface{} {
+// 	return v.getrv().Interface()
+// }
 
 //// map op
 
