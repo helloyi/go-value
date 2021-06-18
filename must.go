@@ -144,6 +144,15 @@ func (v *Value) MustBytes() []byte {
 	return val
 }
 
+// MustString must api for String()
+func (v *Value) MustString() string {
+	val, err := v.String()
+	if err != nil {
+		panic(err)
+	}
+	return val
+}
+
 // MustGet must api for Get
 func (v *Value) MustGet(k interface{}) *Value {
 	val, err := v.Get(k)

@@ -1002,7 +1002,7 @@ var _ = Describe("ConvTo", func() {
 
 		var y struct {
 			A int    `value:"a"`
-			B string `value:"_"`
+			B string `value:"-"`
 			C string
 		}
 

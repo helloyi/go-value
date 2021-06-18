@@ -40,6 +40,11 @@ var (
 	}
 )
 
+// ConvTo convToert src to dst
+func ConvTo(src, dst interface{}) error {
+	return New(src).ConvTo(dst)
+}
+
 // ConvTo convToert t to dst
 func (v *Value) ConvTo(dst interface{}) error {
 	dstv := reflect.ValueOf(dst)
@@ -401,6 +406,7 @@ func (v *Value) convToSlice(dst reflect.Value) error {
 	dst.Set(newSlice)
 	return nil
 }
+
 func (v *Value) convToStruct(dst reflect.Value) error {
 	vm, err := v.Map()
 	if err != nil {
@@ -414,7 +420,7 @@ func (v *Value) convToStruct(dst reflect.Value) error {
 	for i := 0; i < dstype.NumField(); i++ {
 		field := dstype.Field(i)
 		tag := field.Tag.Get("value")
-		if tag == "_" {
+		if tag == "-" {
 			passedFnames[field.Name] = true
 		} else if tag != "" {
 			tag2Fname[tag] = field.Name
