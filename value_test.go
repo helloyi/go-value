@@ -1078,6 +1078,16 @@ var _ = Describe("ConvTo", func() {
 		Expect(y).Should(Equal(*r))
 	})
 
+	Specify("ByteSize type", func() {
+		x := "10KB"
+		var y ByteSize
+
+		vx := New(x)
+		err := vx.ConvTo(&y)
+		Expect(err).Should(BeNil())
+		Expect(y).Should(Equal(ByteSize(10 * 1024)))
+	})
+
 	Specify("nest struct kind", func() {
 		type xx struct {
 			X int

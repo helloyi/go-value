@@ -10,11 +10,17 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/maltegrosse/go-bytesize"
 )
 
 var (
 	// TimeLayout default time layout
 	TimeLayout = "Mon Jan 2 15:04:05 -0700 MST 2006"
+)
+
+type (
+	ByteSize bytesize.ByteSize
 )
 
 var (
@@ -68,6 +74,8 @@ func (v *Value) convTo(dst reflect.Value) (err error) {
 		return v.convToMailAddress(dst)
 	case "regexp.Regexp":
 		return v.convToRegexpRegexp(dst)
+	case "value.ByteSize":
+		return v.convToByteSize(dst)
 	}
 
 	switch dst.Kind() {
@@ -196,6 +204,21 @@ func (v *Value) convToRegexpRegexp(dst reflect.Value) error {
 	}
 
 	return err
+}
+
+func (v *Value) convToByteSize(dst reflect.Value) error {
+	s, err := v.String()
+	if err != nil {
+		return err
+	}
+
+	bs, err := bytesize.Parse(s)
+	if err != nil {
+		return err
+	}
+	dst.Set(reflect.ValueOf(ByteSize(bs)))
+
+	return nil
 }
 
 func (v *Value) convToPtr(dst reflect.Value) error {
